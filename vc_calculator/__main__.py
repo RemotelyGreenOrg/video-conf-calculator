@@ -15,12 +15,12 @@ class Device():
 
     @property
     def power(self):
-        return self.device.power * self.use_factor
+        return self.device.power * self.use_factor * 1e-3
 
     @property
     def embodied_power(self):
         lifetime = self.lifetime_op_hours * 3600
-        return self.use_factor * self.device.manufacture_energy / lifetime
+        return self.use_factor * self.device.manufacture_energy / lifetime * 1e3
 
     @property
     def total_power(self):
@@ -28,6 +28,7 @@ class Device():
 
 
 def server_power(bandwidth):
+    # kWh / GB
     power_low =  model.ServerProperties.energy_intensity_low
     power_high =  model.ServerProperties.energy_intensity_high
     return bandwidth * power_low, bandwidth * power_high
@@ -66,8 +67,8 @@ def main(args=None):
     server_em = server_embodied_power(bandwidth)
     client_op = client_power(devices, "power")
     client_em = client_power(devices, "embodied_power")
-    print(client_em, server_em, [s + client_em for s in server_em])
-    print(client_op, server_op, [s + client_op for s in server_op])
+    print("Embodied", client_em, server_em, [s + client_em for s in server_em])
+    print("Operation", client_op, server_op, [s + client_op for s in server_op])
 
 
 if __name__ == "__main__":
