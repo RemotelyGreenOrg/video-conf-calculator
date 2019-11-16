@@ -21,14 +21,20 @@ class ServerProperties():
     power_video_low = energy_intensity_high * video_bandwidth_low
     power_video_high = energy_intensity_high * video_bandwidth_high
 
+    embodied_power_low = 33.2 # GW
+    embodied_power_high = 70.7 # GW
 
+    embodied_energy_intensity_low = embodied_power_low * 1e6 / (internet_traffic / 24.) # kWh/GB
+    embodied_energy_intensity_high = embodied_power_high * 1e6 / (internet_traffic / 24.) # kWh/GB
+
+
+Device = namedtuple("Device", "power manufacture_energy manufacture_carbon")
 class ClientProperties():
     """ From section 3.2 and 3.3, table 1
     Power in Watts,
     manufacture_energy (Emobdied energy) in MJ / unit
     manufacture_carbon (Carbon emission) in kgCO2e
     """
-    Device = namedtuple("Device", "power manufacture_energy manufacture_carbon")
     laptop = Device(40, 1362, 227)
     personal_comp = Device(150, 2100, 350)
 

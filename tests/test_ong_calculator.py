@@ -9,3 +9,6 @@ def test_server_power():
 
     assert vals.power_video_low == pytest.approx(0.135, rel=0.1)
     assert vals.power_video_high == pytest.approx(13.5, rel=0.1)
+
+    assert vals.embodied_energy_intensity_low == pytest.approx(1.61 , rel=0.1)
+    assert vals.embodied_energy_intensity_high == pytest.approx(3.33, rel=0.1)
