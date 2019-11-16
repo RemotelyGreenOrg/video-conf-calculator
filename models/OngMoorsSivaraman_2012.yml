@@ -1,0 +1,6 @@
+# Based on http://www2.eet.unsw.edu.au/~vijay/pubs/jrnl/14comcomVC.pdf
+
+# Sect 3.1:
+internet:
+    power: {value: 43, units: GW}
+    data_rate: {value: 500, units: PB/day}
