@@ -59,3 +59,6 @@ class ClientProperties():
 
     router = Device(20, 1000, 167)
 
+
+def energy_to_co2(energy, location=None):
+    return energy * 160 * 1e-6 * 3600

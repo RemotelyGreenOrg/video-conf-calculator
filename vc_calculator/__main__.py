@@ -4,6 +4,7 @@ from . import ong_calculator as model
 def prepare_parser():
     import argparse
     parser = argparse.ArgumentParser()
+    parser.add_argument("-u", "--upper", default=False, action="store_true")
     return parser
 
 
@@ -54,21 +55,35 @@ def upper_bound_model():
     devices += [props.high_codec, props.speaker, props.personal_comp]
     devices = [Device(d, lifetime_hours) for d in devices]
     devices += [Device(props.router, 2 * lifetime_hours)]
-    return devices
+
+    bandwidth = 7 # Mb/s
+    bandwidth *= 3600. / 1024 / 8 # Gb/h
+    return devices, bandwidth
+
+
+def lower_bound_model():
+    props = model.ClientProperties
+    lifetime_hours = 10 * 260 * 4
+    devices = [props.laptop, props.router]
+    devices = [Device(d, lifetime_hours) for d in devices]
+    bandwidth = 0.128 # Mb/s
+    bandwidth *= 3600. / 1024 / 8 # Gb/h
+    return devices, bandwidth
 
 
 def main(args=None):
     args = prepare_parser().parse_args(args)
 
-    devices = upper_bound_model()
-    bandwidth = 7 # Mb/s
-    bandwidth *= 3600. / 1024 / 8 # Gb/h
+    devices, bandwidth = upper_bound_model() if args.upper else lower_bound_model()
     server_op = server_power(bandwidth)
     server_em = server_embodied_power(bandwidth)
     client_op = client_power(devices, "power")
     client_em = client_power(devices, "embodied_power")
     print("Embodied", client_em, server_em, [s + client_em for s in server_em])
     print("Operation", client_op, server_op, [s + client_op for s in server_op])
+    total_low = client_op + client_em + server_op[0] + server_em[0]
+    total_high = client_op + client_em + server_op[1] + server_em[1]
+    print("CO2 (kg/hour):", model.energy_to_co2(total_low), model.energy_to_co2(total_high))
 
 
 if __name__ == "__main__":
