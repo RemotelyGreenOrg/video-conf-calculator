@@ -38,11 +38,13 @@ class ClientProperties():
     laptop = Device(40, 1362, 227)
     personal_comp = Device(150, 2100, 350)
 
+    @staticmethod
     def plasma(area):
         return Device(20 + area * 203,
                       5096 * area,
                       849 * area)
 
+    @staticmethod
     def ledlcd(area):
         return Device(20 + area * 172,
                       3218 * area, 
