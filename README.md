@@ -62,12 +62,18 @@ There are many ways this model can be improved:
   should take this into account rather than the simple linear relation between
   power and emissions that is currently assumed.
 * The interface to this model could allow video conferencing providers to directly supply their power consumption for a specific event
-* 
 
 ## Contributing
 *__TODO: Flesh this out__*
 
 ## References
+- [Ong et al., 2014 - "Comparison of the energy, carbon and time costs..."][1]
+- [Foll Thesis, 2008 (French) - "TIC et Énergétique : Techniques d’estimation..."][2]
+- [Baliga et al. 2009 - "Carbon footprint of the Internet"][3]
+- [Souchon et al. 2007 - "Infrastructure of the information society and its energy demand"][4]
+- [Hilty et al. 2015 (German) - "Grüne Software - Schlussbericht zum Vorhaben: Ermittlung..."][5]
+- [Hilty et al. 2014 (English) - "The Energy Demand of ICT: A Historical Perspective and..."][6]
+
 [1]: http://www2.eet.unsw.edu.au/~vijay/pubs/jrnl/14comcomVC.pdf 
 [2]: http://www.biblioite.ethz.ch/downloads/Souchon_these_version-publique.pdf
 [3]: http://dx.doi.org/10.2104/tja09005
