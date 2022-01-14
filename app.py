@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from vc_calculator.__main__ import compute
+from interface import compute, make_device, OnlineDetails
 
 
 app = FastAPI()

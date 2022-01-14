@@ -1,6 +1,7 @@
 from typing import Optional, List, Union
 from enum import Enum
 from pydantic import BaseModel
+from vc_calculator.__main__ import compute
 
 
 class HardwareDetails(BaseModel):
