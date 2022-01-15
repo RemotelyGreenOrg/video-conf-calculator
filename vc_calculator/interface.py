@@ -1,7 +1,7 @@
 from typing import Optional, List, Union
 from enum import Enum
 from pydantic import BaseModel
-from vc_calculator.__main__ import compute
+from .__main__ import compute as _compute
 
 
 class HardwareDetails(BaseModel):
@@ -53,7 +53,45 @@ class OnlineDetails(BaseModel):
     connection: Optional[ConnectionTypes]
 
 
+class UpperLowerBounds(BaseModel):
+    low: float
+    high: float
+
+
+class InfrastructurePower(BaseModel):
+    operation: UpperLowerBounds
+    embodied: UpperLowerBounds
+
+    @classmethod
+    def from_tuples(cls, operation, embodied):
+        return InfrastructurePower(operation=UpperLowerBounds(low=operation[0], high=operation[1]),
+                                   embodied=UpperLowerBounds(low=embodied[0], high=embodied[1]))
+
+
+class UsersPower(BaseModel):
+    operation: float
+    embodied: float
+
+
+class OnlineCalculatorResponse(BaseModel):
+    infrastructure: InfrastructurePower
+    users: UsersPower
+    total_power: UpperLowerBounds
+    total_emissions: UpperLowerBounds
+
+
 def make_device(device):
     if isinstance(device, KnownDevicesEnum):
         device = known_devices[device.value]
     return device
+
+
+def compute(*args, **kwargs):
+    values = _compute(*args, **kwargs)
+    result = OnlineCalculatorResponse(
+            infrastructure=InfrastructurePower.from_tuples(**values["server"]),
+            users=UsersPower(**values["client"]),
+            total_power=UpperLowerBounds(**values["total"]),
+            total_emissions=UpperLowerBounds(**values["co2"]),
+            )
+    return result

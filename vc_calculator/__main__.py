@@ -75,7 +75,8 @@ def main(args=None):
     args = prepare_parser().parse_args(args)
 
     devices, bandwidth = upper_bound_model() if args.upper else lower_bound_model()
-    compute(devices, bandwidth)
+    result = compute(devices, bandwidth)
+    print("CO2 (kg/hour):", result.total_emissions.low, result.total_emissions.high)
 
 
 def compute(devices, bandwidth):
@@ -83,13 +84,10 @@ def compute(devices, bandwidth):
     server_em = server_embodied_power(bandwidth)
     client_op = client_power(devices, "power")
     client_em = client_power(devices, "embodied_power")
-    print("Embodied", client_em, server_em, [s + client_em for s in server_em])
-    print("Operation", client_op, server_op, [s + client_op for s in server_op])
     total_low = client_op + client_em + server_op[0] + server_em[0]
     total_high = client_op + client_em + server_op[1] + server_em[1]
     co2_low = model.energy_to_co2(total_low)
     co2_high = model.energy_to_co2(total_high)
-    print("CO2 (kg/hour):", model.energy_to_co2(total_low), model.energy_to_co2(total_high))
     return dict(server=dict(operation=server_op, embodied=server_em),
                 client=dict(operation=client_op, embodied=client_em),
                 total=dict(low=total_low, high=total_high),
