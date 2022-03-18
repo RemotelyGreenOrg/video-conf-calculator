@@ -31,7 +31,7 @@ known_devices = dict(
                         pc=HardwareDetails(wall_power=46., manufacture_carbon=53.,manufacture_energy=7.),
                     )
 
-class AutoName(Enum):
+class AutoName(str, Enum):
     def _generate_next_value_(name, start, count, last_values):
         return name
 
