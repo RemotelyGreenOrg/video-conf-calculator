@@ -5,6 +5,7 @@ def prepare_parser():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--upper", default=False, action="store_true")
+    parser.add_argument("-l", "--location", default=None, help="Two-letter ISO country code")
     return parser
 
 
@@ -75,19 +76,19 @@ def main(args=None):
     args = prepare_parser().parse_args(args)
 
     devices, bandwidth = upper_bound_model() if args.upper else lower_bound_model()
-    result = compute(devices, bandwidth)
-    print("CO2 (kg/hour):", result.total_emissions.low, result.total_emissions.high)
+    result = compute(devices, bandwidth, args.location)
+    print("CO2 (kg/hour):", result['co2']['low'], result['co2']['high'])
 
 
-def compute(devices, bandwidth):
+def compute(devices, bandwidth, location=None):
     server_op = server_power(bandwidth)
     server_em = server_embodied_power(bandwidth)
     client_op = client_power(devices, "power")
     client_em = client_power(devices, "embodied_power")
     total_low = client_op + client_em + server_op[0] + server_em[0]
     total_high = client_op + client_em + server_op[1] + server_em[1]
-    co2_low = model.energy_to_co2(total_low)
-    co2_high = model.energy_to_co2(total_high)
+    co2_low = model.energy_to_co2(total_low, location)
+    co2_high = model.energy_to_co2(total_high, location)
     return dict(server=dict(operation=server_op, embodied=server_em),
                 client=dict(operation=client_op, embodied=client_em),
                 total=dict(low=total_low, high=total_high),
