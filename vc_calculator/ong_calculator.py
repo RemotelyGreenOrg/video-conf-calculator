@@ -1,7 +1,10 @@
 """
 Based on http://www2.eet.unsw.edu.au/~vijay/pubs/jrnl/14comcomVC.pdf
 """
+from urllib.request import urlopen, Request
+from urllib.error import HTTPError, URLError
 import math
+import json
 from collections import namedtuple
 
 
@@ -63,4 +66,36 @@ class ClientProperties():
 
 
 def energy_to_co2(energy, location=None):
+    if location is not None:
+        intensity = get_energy_intensity(location)
+        if intensity is not None:
+            print('Intensity for', location, 'is', intensity)
+            return energy * intensity * 1e-6 * 3600
+        else:
+            print(
+                'Could not get energy intensity for location, defaulting to model estimates'
+            )
     return energy * 160 * 1e-6 * 3600
+
+
+# Returns gCO2eq/kWh based on https://docs.co2signal.com/#get-latest-by-country-code
+# TODO: Add some caching as the ratelimit on this API is fairly aggresssive.
+def get_energy_intensity(location):
+    url = 'https://api.co2signal.com/v1/latest?countryCode='+location
+    request = Request(url, headers={
+        'auth-token': '',  # TODO: Add key
+        'User-Agent': 'RemotelyGreen'
+    })
+    try:
+        with urlopen(request, timeout=10) as response:
+            body = response.read()
+            data = json.loads(body)
+            intensity = data['data']['carbonIntensity']
+            return intensity
+
+    except HTTPError as error:
+        print(error.status, error.reason, error.read())
+    except URLError as error:
+        print(error.reason)
+    except TimeoutError:
+        print("Request timed out")
