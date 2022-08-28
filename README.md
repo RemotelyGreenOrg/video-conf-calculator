@@ -8,6 +8,8 @@ A live online version is coming soon...
 ```
 git clone https://github.com/benkrikler/video-conf-calculator.git
 export PYTHONPATH="$PWD${PYTHONPATH:+:$PYTHONPATH}"
+# If necessary, build docker image
+DOCKER_BUILDKIT=1 docker build -t video-conf-calculator:latest .
 ```
 **Note**: that this should only be temporary before we switch things to be a proper python package, available on PyPI etc.
 
@@ -15,6 +17,8 @@ export PYTHONPATH="$PWD${PYTHONPATH:+:$PYTHONPATH}"
 *__TODO: Flesh this out__*
 ```
 python -m vc_calculator --help
+# Or, on docker
+docker run video-conf-calculator:latest --help
 ```
 
 ## How it works
